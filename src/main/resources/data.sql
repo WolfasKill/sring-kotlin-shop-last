@@ -17,8 +17,8 @@ INSERT INTO TBL_PRODUCT (grp_product_id,name) VALUES
                                    (3,'SAMSUNG'),
                                    (3,'LOC'),
                                    (3,'DELL'),
-                                   (3,'ASUS'),
-                                   (3,'SAMSUNG')
+                                   (4,'ASUS'),
+                                   (4,'SAMSUNG')
 
 
 
