@@ -3,6 +3,7 @@ package ru.sring_kotlin_shop.entity
 import jakarta.persistence.*
 
 
+
 @Entity
 @Table(name = "TBL_GRP_PRODUCT")
 class GrpProductEntity(
