@@ -15,56 +15,56 @@ import ru.sring_kotlin_shop.service.GrpProductService
 
 @Service
 class GrpProductServiceImp(
-    private val countryRepository: GrpProductRepository,
-    private val cityRepository: ProductRepository,
+    private val grpproductRepository: GrpProductRepository,
+    private val productRepository: ProductRepository,
 ) : GrpProductService {
 
     override fun getAll(pageIndex: Int): List<GrpProductDto> =
-        countryRepository.findByOrderByName(PageRequest.of(pageIndex, 2))
+        grpproductRepository.findByOrderByName(PageRequest.of(pageIndex, 2))
             .map { it.toDto() }
 
     override fun getById(id: Int): GrpProductDto =
-        countryRepository.findByIdOrNull(id)
+        grpproductRepository.findByIdOrNull(id)
             ?.toDto()
             ?: throw GrpProductyNotFoundException(id)
 
     override fun search(prefix: String): List<GrpProductDto> =
-        countryRepository.findByNameStartsWithIgnoreCaseOrderByName(prefix)
+        grpproductRepository.findByNameStartsWithIgnoreCaseOrderByName(prefix)
             .map { it.toDto() }
 
     override fun getgrproductNames(): List<String> =
-        countryRepository.findAllByOrderByName().map { it.name }
+        grpproductRepository.findAllByOrderByName().map { it.name }
 
     @Transactional
     override fun create(dto: GrpProductDto): Int {
-        val grpProductEntity = countryRepository.save(dto.toEntity())
+        val grpProductEntity = grpproductRepository.save(dto.toEntity())
         val products = dto.product.map { it.toEntity(grpProductEntity) }
-        cityRepository.saveAll(products)
+        productRepository.saveAll(products)
         return grpProductEntity.id
     }
 
     @Transactional
     override fun update(id: Int, dto: GrpProductDto) {
-        var existingCountry = countryRepository.findByIdOrNull(id)
+        var existingCountry = grpproductRepository.findByIdOrNull(id)
             ?: throw GrpProductyNotFoundException(id)
 
         existingCountry.name = dto.name
 //        existingCountry.population = dto.population
 
-        existingCountry = countryRepository.save(existingCountry)
+        existingCountry = grpproductRepository.save(existingCountry)
 
         val products = dto.product.map { it.toEntity(existingCountry) }
-        cityRepository.deleteAllByGrpproduct(existingCountry)
-        cityRepository.saveAll(products)
+        productRepository.deleteAllByGrpproduct(existingCountry)
+        productRepository.saveAll(products)
     }
 
     @Transactional
     override fun delete(id: Int) {
-        val existingCountry = countryRepository.findByIdOrNull(id)
+        val existingCountry = grpproductRepository.findByIdOrNull(id)
             ?: throw GrpProductyNotFoundException(id)
 
-        cityRepository.deleteAllByGrpproduct(existingCountry)
-        countryRepository.deleteById(existingCountry.id)
+        productRepository.deleteAllByGrpproduct(existingCountry)
+        grpproductRepository.deleteById(existingCountry.id)
     }
 
     private fun GrpProductEntity.toDto(): GrpProductDto =
